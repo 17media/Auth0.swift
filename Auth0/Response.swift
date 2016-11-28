@@ -47,7 +47,7 @@ struct Response<E: Auth0Error> {
                 throw E(info: json, statusCode: response.statusCode)
             }
 
-            if response.statusCode != 404 {
+            if response.statusCode < 400 {
                 throw E(string: string(data), statusCode: response.statusCode)
             } else {
                 return nil
