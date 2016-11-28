@@ -30,6 +30,7 @@ func json<T>(_ data: Data?) -> T? {
 
 func string(_ data: Data?) -> String? {
     guard let data = data else { return nil }
+    
     return String(data: data, encoding: .utf8)
 }
 
@@ -45,7 +46,13 @@ struct Response<E: Auth0Error> {
             if let json: [String: Any] = json(data) {
                 throw E(info: json, statusCode: response.statusCode)
             }
-            throw E(string: string(data), statusCode: response.statusCode)
+
+            if response.statusCode != 404 {
+                throw E(string: string(data), statusCode: response.statusCode)
+            } else {
+                return nil
+            }
+            
         }
         guard let data = self.data else {
             if response.statusCode == 204 {
